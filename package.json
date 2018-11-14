@@ -1,0 +1,40 @@
+{
+  "name": "history_news_trends",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "build": "webpack --config build/webpack.config.dev.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --config build/webpack.config.dev.js --watch & node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.gatech.edu/rsingh348/dva_historical_news_trends.git"
+  },
+  "author": "Rajdeep Singh",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "hapi": "^17.7.0",
+    "inert": "^5.1.2",
+    "lodash": "^4.17.11",
+    "nodemon": "^1.18.6",
+    "vue": "^2.5.17",
+    "vue-router": "^3.0.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "css-loader": "^1.0.1",
+    "html-webpack-plugin": "^3.2.0",
+    "style-loader": "^0.23.1",
+    "vue-loader": "^15.4.2",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.5.17",
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
+  }
+}
+ // "dev": "webpack-dev-server --config build/webpack.config.dev.js",
