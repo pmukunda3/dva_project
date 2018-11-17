@@ -1,4 +1,4 @@
-#canvas {
+#canvas, .button-div {
     width: 1000px;
     margin: auto;
 }
@@ -10,15 +10,13 @@
     }
 
     #play-button {
-      position: absolute;
-      top: 140px;
-      left: 50px;
+     margin-left: 35px;
       background: #f08080;
       padding-right: 26px;
       border-radius: 3px;
       border: none;
       color: white;
-      margin: 0;
+        
       padding: 0 12px;
       width: 60px;
       cursor: pointer;
@@ -62,4 +60,8 @@
       stroke: #000;
       stroke-opacity: 0.5;
       stroke-width: 1.25px;
+    }
+
+    .slider-axis path {
+        display: none
     }
