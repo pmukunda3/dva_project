@@ -61,7 +61,7 @@ let BORDER = CANVAS
 let FORMATDATE = d3.time.format("%b %Y");
 let PARSEDATE = d3.time.format("%m/%d/%y").parse;
 
-let STARTDATE = new Date("2005-11-01")
+let STARTDATE = new Date("2015-11-01")
 let ENDDATE = new Date("2017-04-01");
 
 
@@ -134,16 +134,8 @@ let SLIDER_LABEL = SLIDER.append("text")
 
 
 // ###################### CIRCLES #######################
-let circles = CHART.selectAll("circle")
-            .data(circleCenterList())
-            .enter()
-            .append("circle");
+let BUBBLE_DATA = circleCenterList()
 
-circles
-    .attr("cx", function (d) { return d.cx; })
-    .attr("cy", function (d) { return d.cy; })
-    .attr("r", 60)
-    .style("fill", 'blue');
 
 d3.csv("./circles.csv", prepare, function (data) {
     dataset = data;
@@ -159,7 +151,7 @@ d3.csv("./circles.csv", prepare, function (data) {
                 button.text("Play");
             } else {
                 MOVING = true;
-                timer = setInterval(step, 150);
+                timer = setInterval(step, 2000);
                 button.text("Pause");
             }
             console.log("Slider MOVING: " + MOVING);
@@ -167,17 +159,56 @@ d3.csv("./circles.csv", prepare, function (data) {
 })
 
 
+function drawBubbles(data) {
+    let bubbles = CHART.selectAll(".bubble")
+        .data(data)
+
+    bubbles.exit().remove();
+    
+    bubbles.enter()
+    .append("circle")
+    .attr("class", "bubble")
+   
+
+    bubbles
+        .attr("r", 0)
+        .attr("cx", function (d) { return d.cx; })
+        .attr("cy", function (d) { return d.cy; })
+    .transition()
+    .duration(1000)
+
+    .style("fill", 'blue')
+    .attr("r", 40)
+    
+
+//     bubbles.enter()
+//     .append("circle")
+//     .attr("class", "bubble")
+//     .attr("cx", function (d) { return d.cx; })
+//     .attr("cy", function (d) { return d.cy; })
+//     .style("fill", 'blue')
+//     .attr("r", 60)
+//         .transition()
+//         .duration(400)
+//         .attr("r", 80)
+//         .transition()
+//         .attr("r", 60);
+
+//   bubbles.exit().remove()
+
+        // .transition()
+        // .duration(500)
+}
 
 function step() {
     update();
-    CURRENT_SLIDER_VALUE = CURRENT_SLIDER_VALUE + (SLIDER_WIDTH / 300);
+    CURRENT_SLIDER_VALUE = CURRENT_SLIDER_VALUE + (SLIDER_WIDTH / 10);
     if (CURRENT_SLIDER_VALUE > SLIDER_WIDTH) {
         MOVING = false;
         CURRENT_SLIDER_VALUE = 0;
         clearInterval(timer);
         // timer = 0;
         playButton.text("Play");
-        console.log("Slider MOVING: " + MOVING);
     }
 }
 
@@ -214,12 +245,14 @@ function update() {
     SLIDER_LABEL
         .attr("x", numeric_value)
         .text(FORMATDATE(date_value));
+    let data = getRandomBubble(BUBBLE_DATA, 10)
+    drawBubbles(data)
+
 }
 
 function circleCenterList() {
     let list = []
     for (let x_axis = 100; x_axis <= CHART_WIDTH; x_axis = x_axis + 150) {
-        console.log(x_axis)
         for (let y_axis = 100; y_axis <= CHART_HEIGHT; y_axis = y_axis + 150) {
             list.push({ "cx": x_axis, "cy": y_axis})
         }
@@ -227,6 +260,10 @@ function circleCenterList() {
     return list
 }
 
+function getRandomBubble(data, size) {
+    console.log(_.shuffle(data).slice(0, size))
+    return _.shuffle(data).slice(0, size)
+}
 
 function setshadow() {
     var defs = CANVAS.append("defs");
