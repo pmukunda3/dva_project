@@ -1,7 +1,7 @@
 
-let formatDateIntoYear = d3.timeFormat("%Y");
-let formatDate = d3.timeFormat("%b %Y");
-let parseDate = d3.timeParse("%m/%d/%y");
+let FORMATDATEIntoYear = d3.timeFormat("%Y");
+let FORMATDATE = d3.timeFormat("%b %Y");
+let PARSEDATE = d3.timeParse("%m/%d/%y");
 
 let startDate = new Date("2004-11-01"),
     endDate = new Date("2017-04-01");
@@ -15,9 +15,9 @@ let svg = d3.select("#vis")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom);  
 
-////////// slider //////////
+////////// SLIDER //////////
 
-let moving = false;
+let MOVING = false;
 let currentValue = 0;
 let targetValue = width;
 
@@ -28,11 +28,11 @@ let x = d3.scaleTime()
     .range([0, targetValue])
     .clamp(true);
 
-let slider = svg.append("g")
-    .attr("class", "slider")
+let SLIDER = svg.append("g")
+    .attr("class", "SLIDER")
     .attr("transform", "translate(" + margin.left + "," + height/5 + ")");
 
-slider.append("line")
+SLIDER.append("line")
     .attr("class", "track")
     .attr("x1", x.range()[0])
     .attr("x2", x.range()[1])
@@ -41,14 +41,14 @@ slider.append("line")
   .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
     .attr("class", "track-overlay")
     .call(d3.drag()
-        .on("start.interrupt", function() { slider.interrupt(); })
+        .on("start.interrupt", function() { SLIDER.interrupt(); })
         .on("start drag", function() {
           currentValue = d3.event.x;
           update(x.invert(currentValue)); 
         })
     );
 
-slider.insert("g", ".track-overlay")
+SLIDER.insert("g", ".track-overlay")
     .attr("class", "ticks")
     .attr("transform", "translate(0," + 18 + ")")
   .selectAll("text")
@@ -58,16 +58,16 @@ slider.insert("g", ".track-overlay")
     .attr("x", x)
     .attr("y", 10)
     .attr("text-anchor", "middle")
-    .text(function(d) { return formatDateIntoYear(d); });
+    .text(function(d) { return FORMATDATEIntoYear(d); });
 
-let handle = slider.insert("circle", ".track-overlay")
-    .attr("class", "handle")
+let HANDLE = SLIDER.insert("circle", ".track-overlay")
+    .attr("class", "HANDLE")
     .attr("r", 9);
 
-let label = slider.append("text")  
+let label = SLIDER.append("text")  
     .attr("class", "label")
     .attr("text-anchor", "middle")
-    .text(formatDate(startDate))
+    .text(FORMATDATE(startDate))
     .attr("transform", "translate(0," + (-25) + ")")
 
  
@@ -87,22 +87,22 @@ d3.csv("circles.csv", prepare, function(data) {
     .on("click", function() {
     let button = d3.select(this);
     if (button.text() == "Pause") {
-      moving = false;
+      MOVING = false;
       clearInterval(timer);
       // timer = 0;
       button.text("Play");
     } else {
-      moving = true;
+      MOVING = true;
       timer = setInterval(step, 100);
       button.text("Pause");
     }
-    console.log("Slider moving: " + moving);
+    console.log("SLIDER MOVING: " + MOVING);
   })
 })
 
 function prepare(d) {
   d.id = d.id;
-  d.date = parseDate(d.date);
+  d.date = PARSEDATE(d.date);
   return d;
 }
   
@@ -110,12 +110,12 @@ function step() {
   update(x.invert(currentValue));
   currentValue = currentValue + (targetValue/151);
   if (currentValue > targetValue) {
-    moving = false;
+    MOVING = false;
     currentValue = 0;
     clearInterval(timer);
     // timer = 0;
     playButton.text("Play");
-    console.log("Slider moving: " + moving);
+    console.log("SLIDER MOVING: " + MOVING);
   }
 }
 
@@ -145,11 +145,11 @@ function drawPlot(data) {
 }
 
 function update(h) {
-  // update position and text of label according to slider scale
-  handle.attr("cx", x(h));
+  // update position and text of label according to SLIDER scale
+  HANDLE.attr("cx", x(h));
   label
     .attr("x", x(h))
-    .text(formatDate(h));
+    .text(FORMATDATE(h));
 
   // filter data set and redraw plot
   let newData = dataset.filter(function(d) {
@@ -188,7 +188,7 @@ let MARGIN = {
 }
 
 
-let canvas = d3
+let CANVAS = d3
   .select('#canvas')
   .append('svg')
   .attr('height', CHART_HEIGHT + SLIDER_HEIGHT + MARGIN.top + MARGIN.bottom)
@@ -196,32 +196,32 @@ let canvas = d3
   .attr('transform', 'translate(' + 0 + ',' + 0 + ')');
 
 
-let chart = canvas
+let CHART = CANVAS
   .append('g')
   .attr('class', 'chart')
   .attr('transform', 'translate(' + 0 + ',' + MARGIN.top + ')')
   .attr('height', CHART_HEIGHT)
   .attr('width', CHART_WIDTH);
 
-let slider = canvas
+let SLIDER = CANVAS
   .append('g')
   .attr("class", "slider")
   .attr('transform', 'translate(' + MARGIN.left + ',' + (MARGIN.top + CHART_HEIGHT) + ')')
   .attr('height', SLIDER_HEIGHT)
   .attr('width', SLIDER_WIDTH);
 
-// -------- slider code -------------
+// -------- SLIDER code -------------
 
-let formatDateIntoYear = d3.time.format("%Y");
-let formatDate = d3.time.format("%b %Y");
-let parseDate = d3.time.format("%m/%d/%y").parse;
+// let FORMATDATEIntoYear = d3.time.format("%Y");
+let FORMATDATE = d3.time.format("%b %Y");
+let PARSEDATE = d3.time.format("%m/%d/%y").parse;
 
 let startDate = new Date("2005-11-01")
 let endDate = new Date("2017-04-01");
 
 
 // ############################### SLIDER CODE ################################
-let moving = false;
+let MOVING = false;
 let CURRENT_SLIDER_VALUE = 0
 let SLIDER_STEPS = (endDate.getFullYear() - startDate.getFullYear() + 5) * 15
 
@@ -231,21 +231,21 @@ let playButton = d3.select("#play-button");
 // TODO: -- GET DATES FROM THE INPUT BOX AND PUT IT HERE ---
 
 
-let slider_scale = d3.time.scale()
+let SLIDER_SCALE = d3.time.scale()
   .domain([startDate, endDate])
   .range([0, SLIDER_WIDTH])
   .clamp(true);
 
-let slider_axis = d3.svg.axis()
-  .scale(slider_scale)
+let SLIDER_AXIS = d3.svg.axis()
+  .scale(SLIDER_SCALE)
   .orient("bottom")
   .ticks(5)
-  .tickFormat(formatDate)
+  .tickFormat(FORMATDATE)
 
-slider.append("line")
+SLIDER.append("line")
   .attr("class", "track")
-  .attr("x1", slider_scale.range()[0])
-  .attr("x2", slider_scale.range()[1])
+  .attr("x1", SLIDER_SCALE.range()[0])
+  .attr("x2", SLIDER_SCALE.range()[1])
   .select(function () { return this.parentNode.appendChild(this.cloneNode(true)); })
   .attr("class", "track-inset")
   .select(function () { return this.parentNode.appendChild(this.cloneNode(true)); })
@@ -257,39 +257,39 @@ slider.append("line")
 
   );
 
-slider.append("g")
+SLIDER.append("g")
   .attr("class", "slider-axis")
   .attr("transform", "translate(0," + 12 + ")")
-  .call(slider_axis)
+  .call(SLIDER_AXIS)
   .selectAll("text")
 
-let handle = slider.insert("circle", ".track-overlay")
+let HANDLE = SLIDER.insert("circle", ".track-overlay")
   .attr("class", "handle")
   .attr("r", 9);
 
-let slider_label = slider.append("text")
-  .attr("class", "label")
+let SLIDER_LABEL = SLIDER.append("text")
+  .attr("class", "slider-label")
   .attr("text-anchor", "middle")
-  .text(formatDate(startDate))
+  .text(FORMATDATE(startDate))
   .attr("transform", "translate(0," + (55) + ")")
 
 
-// slider.insert("g", ".track-overlay")
+// SLIDER.insert("g", ".track-overlay")
 //     .attr("class", "ticks")
 //     .attr("transform", "translate(0," + 18 + ")")
 //     .selectAll("text")
-//     .data(slider_scale.ticks(10))
+//     .data(SLIDER_SCALE.ticks(10))
 //     .enter()
 //     .append("text")
-//     .attr("x", slider_scale)
+//     .attr("x", SLIDER_SCALE)
 //     .attr("y", 10)
 //     .attr("text-anchor", "middle")
 //     .text(function (d) { console.log(d)
-//         return formatDate(d); });
+//         return FORMATDATE(d); });
 
 
 // ###################### CIRCLES #######################
-// let circles = chart.selectAll("circle")
+// let circles = CHART.selectAll("circle")
 //             .data(circleCenterList())
 //             .enter()
 //             .append("circle");
@@ -308,16 +308,16 @@ d3.csv("./circles.csv", prepare, function (data) {
     .on("click", function () {
       let button = d3.select(this);
       if (button.text() == "Pause") {
-        moving = false;
+        MOVING = false;
         clearInterval(timer);
         // timer = 0;
         button.text("Play");
       } else {
-        moving = true;
+        MOVING = true;
         timer = setInterval(step, 150);
         button.text("Pause");
       }
-      console.log("Slider moving: " + moving);
+      console.log("SLIDER MOVING: " + MOVING);
     })
 })
 
@@ -327,19 +327,19 @@ function step() {
   update();
   CURRENT_SLIDER_VALUE = CURRENT_SLIDER_VALUE + (SLIDER_WIDTH / 300);
   if (CURRENT_SLIDER_VALUE > SLIDER_WIDTH) {
-    moving = false;
+    MOVING = false;
     CURRENT_SLIDER_VALUE = 0;
     clearInterval(timer);
     // timer = 0;
     playButton.text("Play");
-    console.log("Slider moving: " + moving);
+    console.log("SLIDER MOVING: " + MOVING);
   }
 }
 
 
 function prepare(d) {
   d.id = d.id;
-  d.date = parseDate(d.date);
+  d.date = PARSEDATE(d.date);
   return d;
 }
 
@@ -362,13 +362,13 @@ function dragended() {
 }
 
 function update() {
-  let date_value = slider_scale.invert(CURRENT_SLIDER_VALUE)
-  let numeric_value = slider_scale(date_value)
-  handle.attr("cx", numeric_value);
+  let date_value = SLIDER_SCALE.invert(CURRENT_SLIDER_VALUE)
+  let numeric_value = SLIDER_SCALE(date_value)
+  HANDLE.attr("cx", numeric_value);
 
-  slider_label
+  SLIDER_label
     .attr("x", numeric_value)
-    .text(formatDate(date_value));
+    .text(FORMATDATE(date_value));
 }
 
 // function circleCenterList() {
