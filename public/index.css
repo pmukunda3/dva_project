@@ -65,3 +65,10 @@
     .slider-axis path {
         display: none
     }
+
+    .bubble-text {
+        text-anchor: middle;
+        alignment-baseline: middle;
+        fill: black;
+        font-weight: bold;
+    }

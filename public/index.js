@@ -160,25 +160,38 @@ d3.csv("./circles.csv", prepare, function (data) {
 
 
 function drawBubbles(data) {
-    let bubbles = CHART.selectAll(".bubble")
+    CHART.selectAll(".bubble-group").remove();
+    let bubble_group = CHART.selectAll(".bubble-group")
         .data(data)
 
-    bubbles.exit().remove();
-    
-    bubbles.enter()
-    .append("circle")
-    .attr("class", "bubble")
-   
+    bubble_group.enter()
+        .append("g")
+        .attr("class", "bubble-group")
+
+    let text = bubble_group
+        .append("text")
+        .attr("class", "bubble-text")
+        .attr("x", function (d) { return d.cx; })
+        .attr("y", function (d) { return d.cy; })
+        .text(function(d) { return d.topic; })
+        .attr("font-size", "1px")
+        .transition()
+        .duration(1000)
+        .attr("font-size", "12px")
+
+    let bubbles = bubble_group
+        .append("circle")
+        .attr("class", "bubble")
 
     bubbles
         .attr("r", 0)
         .attr("cx", function (d) { return d.cx; })
         .attr("cy", function (d) { return d.cy; })
-    .transition()
-    .duration(1000)
-
-    .style("fill", 'blue')
-    .attr("r", 40)
+        .transition()
+        .duration(1000)
+        .style("fill", 'blue')
+        .style("opacity", 0.7)
+        .attr("r", 40)
     
 
 //     bubbles.enter()
@@ -254,7 +267,7 @@ function circleCenterList() {
     let list = []
     for (let x_axis = 100; x_axis <= CHART_WIDTH; x_axis = x_axis + 150) {
         for (let y_axis = 100; y_axis <= CHART_HEIGHT; y_axis = y_axis + 150) {
-            list.push({ "cx": x_axis, "cy": y_axis})
+            list.push({ "cx": x_axis, "cy": y_axis, "topic": "TOPIC No:"+ x_axis + "_" + y_axis})
         }
     }
     return list
