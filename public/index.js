@@ -85,7 +85,8 @@ let SLIDER_AXIS = d3.svg.axis()
     .orient("bottom")
     .ticks(5)
     .tickFormat(FORMATDATE)
-
+let COLOR_SCALE = d3.scale.category10().domain([0, 1, 2, 3, 4, 5, 6,7, 8,9])
+let SIZE_SCALE = d3.scale.linear().domain([0, 9]).range([20, 70])
 SLIDER.append("line")
     .attr("class", "track")
     .attr("x1", SLIDER_SCALE.range()[0])
@@ -171,14 +172,17 @@ function drawBubbles(data) {
 
     bubbles
         .attr("r", 15)
-        .style("fill", 'blue')
-        .attr("cx", function (d) { return d.cx; })
+        .style("fill", function(d, i) {
+            return COLOR_SCALE(i)
+        })
+        .attr("cx", function (d) { 
+            return d.cx; })
         .attr("cy", function (d) { return d.cy; })
-    .transition()
-    .duration(600)
-
-    .style("fill", 'blue')
-    .attr("r", 40)
+        .transition()
+        .duration(800)
+        .attr("r", function (d, i) {
+            return SIZE_SCALE(i)
+        })
     
 
 //     bubbles.enter()
@@ -257,7 +261,6 @@ function circleCenterList() {
 }
 
 function getRandomBubble(data, size) {
-    console.log(_.shuffle(data).slice(0, size))
     return _.shuffle(data).slice(0, size)
 }
 
