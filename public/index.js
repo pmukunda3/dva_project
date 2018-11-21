@@ -67,7 +67,7 @@ let PARSEDATE = d3.time.format("%m/%d/%y").parse;
 // ############################### SLIDER CODE ################################
 let MOVING = false;
 let CURRENT_SLIDER_VALUE = 0
-let SLIDER_STEPS = (ENDDATE.getFullYear() - STARTDATE.getFullYear() + 5) * 15
+let SLIDER_STEPS = (ENDDATE.getFullYear() - STARTDATE.getFullYear()) * 10
 
 
 let playButton = d3.select("#play-button");
@@ -150,7 +150,7 @@ d3.csv("", prepare, function (data) {
                 button.text("Play");
             } else {
                 MOVING = true;
-                timer = setInterval(step, 2000);
+                timer = setInterval(step, 1800);
                 button.text("Pause");
             }
             console.log("Slider MOVING: " + MOVING);
@@ -170,11 +170,12 @@ function drawBubbles(data) {
    
 
     bubbles
-        .attr("r", 0)
+        .attr("r", 15)
+        .style("fill", 'blue')
         .attr("cx", function (d) { return d.cx; })
         .attr("cy", function (d) { return d.cy; })
     .transition()
-    .duration(1000)
+    .duration(600)
 
     .style("fill", 'blue')
     .attr("r", 40)
@@ -201,7 +202,7 @@ function drawBubbles(data) {
 
 function step() {
     update();
-    CURRENT_SLIDER_VALUE = CURRENT_SLIDER_VALUE + (SLIDER_WIDTH / 10);
+    CURRENT_SLIDER_VALUE = CURRENT_SLIDER_VALUE + (SLIDER_WIDTH / SLIDER_STEPS);
     if (CURRENT_SLIDER_VALUE > SLIDER_WIDTH) {
         resetSlider()
     }
