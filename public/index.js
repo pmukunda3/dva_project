@@ -61,8 +61,7 @@ let BORDER = CANVAS
 let FORMATDATE = d3.time.format("%b %Y");
 let PARSEDATE = d3.time.format("%m/%d/%y").parse;
 
-let STARTDATE = new Date("2015-11-01")
-let ENDDATE = new Date("2017-04-01");
+
 
 
 // ############################### SLIDER CODE ################################
@@ -137,7 +136,7 @@ let SLIDER_LABEL = SLIDER.append("text")
 let BUBBLE_DATA = circleCenterList()
 
 
-d3.csv("./circles.csv", prepare, function (data) {
+d3.csv("", prepare, function (data) {
     dataset = data;
     // drawPlot(dataset);
 
