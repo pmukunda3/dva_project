@@ -12,13 +12,13 @@
     #play-button {
      margin-left: 35px;
       background: #f08080;
-      padding-right: 26px;
+
       border-radius: 3px;
       border: none;
       color: white;
         
-      padding: 0 12px;
-      width: 60px;
+      padding: 0px 15px 0px 15px;
+      width: 80px;
       cursor: pointer;
       height: 30px;
     }

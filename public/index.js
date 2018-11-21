@@ -67,7 +67,7 @@ let PARSEDATE = d3.time.format("%m/%d/%y").parse;
 // ############################### SLIDER CODE ################################
 let MOVING = false;
 let CURRENT_SLIDER_VALUE = 0
-let SLIDER_STEPS = (ENDDATE.getFullYear() - STARTDATE.getFullYear() + 5) * 15
+let SLIDER_STEPS = (ENDDATE.getFullYear() - STARTDATE.getFullYear()) * 10
 
 
 let playButton = d3.select("#play-button");
@@ -85,7 +85,8 @@ let SLIDER_AXIS = d3.svg.axis()
     .orient("bottom")
     .ticks(5)
     .tickFormat(FORMATDATE)
-
+let COLOR_SCALE = d3.scale.category10().domain([0, 1, 2, 3, 4, 5, 6,7, 8,9])
+let SIZE_SCALE = d3.scale.linear().domain([0, 9]).range([20, 70])
 SLIDER.append("line")
     .attr("class", "track")
     .attr("x1", SLIDER_SCALE.range()[0])
@@ -150,7 +151,7 @@ d3.csv("", prepare, function (data) {
                 button.text("Play");
             } else {
                 MOVING = true;
-                timer = setInterval(step, 2000);
+                timer = setInterval(step, 1800);
                 button.text("Pause");
             }
             console.log("Slider MOVING: " + MOVING);
@@ -170,14 +171,18 @@ function drawBubbles(data) {
    
 
     bubbles
-        .attr("r", 0)
-        .attr("cx", function (d) { return d.cx; })
+        .attr("r", 15)
+        .style("fill", function(d, i) {
+            return COLOR_SCALE(i)
+        })
+        .attr("cx", function (d) { 
+            return d.cx; })
         .attr("cy", function (d) { return d.cy; })
-    .transition()
-    .duration(1000)
-
-    .style("fill", 'blue')
-    .attr("r", 40)
+        .transition()
+        .duration(800)
+        .attr("r", function (d, i) {
+            return SIZE_SCALE(i)
+        })
     
 
 //     bubbles.enter()
@@ -201,13 +206,9 @@ function drawBubbles(data) {
 
 function step() {
     update();
-    CURRENT_SLIDER_VALUE = CURRENT_SLIDER_VALUE + (SLIDER_WIDTH / 10);
+    CURRENT_SLIDER_VALUE = CURRENT_SLIDER_VALUE + (SLIDER_WIDTH / SLIDER_STEPS);
     if (CURRENT_SLIDER_VALUE > SLIDER_WIDTH) {
-        MOVING = false;
-        CURRENT_SLIDER_VALUE = 0;
-        clearInterval(timer);
-        // timer = 0;
-        playButton.text("Play");
+        resetSlider()
     }
 }
 
@@ -260,7 +261,6 @@ function circleCenterList() {
 }
 
 function getRandomBubble(data, size) {
-    console.log(_.shuffle(data).slice(0, size))
     return _.shuffle(data).slice(0, size)
 }
 
@@ -296,4 +296,29 @@ function setshadow() {
         .attr("in", "offsetBlur")
     feMerge.append("feMergeNode")
         .attr("in", "SourceGraphic");
+}
+
+
+function updateSliderAxis() {
+    SLIDER_SCALE.domain([STARTDATE, ENDDATE])
+    
+    SLIDER.select(".slider-axis")
+        .transition()
+        .duration(500)
+        .call(SLIDER_AXIS)
+
+    HANDLE.attr("cx", SLIDER_SCALE(STARTDATE));
+    SLIDER_LABEL
+        .attr("x", SLIDER_SCALE(STARTDATE))
+        .text(FORMATDATE(STARTDATE));
+    resetSlider()
+}
+
+function resetSlider() {
+    MOVING = false;
+    CURRENT_SLIDER_VALUE = 0;
+    clearInterval(timer);
+    // timer = 0;
+    playButton.text("Play");
+ 
 }
