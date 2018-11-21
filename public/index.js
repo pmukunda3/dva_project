@@ -203,11 +203,7 @@ function step() {
     update();
     CURRENT_SLIDER_VALUE = CURRENT_SLIDER_VALUE + (SLIDER_WIDTH / 10);
     if (CURRENT_SLIDER_VALUE > SLIDER_WIDTH) {
-        MOVING = false;
-        CURRENT_SLIDER_VALUE = 0;
-        clearInterval(timer);
-        // timer = 0;
-        playButton.text("Play");
+        resetSlider()
     }
 }
 
@@ -296,4 +292,29 @@ function setshadow() {
         .attr("in", "offsetBlur")
     feMerge.append("feMergeNode")
         .attr("in", "SourceGraphic");
+}
+
+
+function updateSliderAxis() {
+    SLIDER_SCALE.domain([STARTDATE, ENDDATE])
+    
+    SLIDER.select(".slider-axis")
+        .transition()
+        .duration(500)
+        .call(SLIDER_AXIS)
+
+    HANDLE.attr("cx", SLIDER_SCALE(STARTDATE));
+    SLIDER_LABEL
+        .attr("x", SLIDER_SCALE(STARTDATE))
+        .text(FORMATDATE(STARTDATE));
+    resetSlider()
+}
+
+function resetSlider() {
+    MOVING = false;
+    CURRENT_SLIDER_VALUE = 0;
+    clearInterval(timer);
+    // timer = 0;
+    playButton.text("Play");
+ 
 }

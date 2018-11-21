@@ -4,16 +4,16 @@ let ENDDATE = new Date("2019-04-01");
 $(function () {
     
     $("#date-from").datepicker({
-        dateformat: 'yy-mm-dd',
         onSelect: function () {
             STARTDATE = new Date(this.value)
-            console.log(STARTDATE);
+            updateSliderAxis()
         }
     }).datepicker("setDate", STARTDATE);
     $("#date-to").datepicker({
         onSelect: function () {
             ENDDATE = new Date(this.value)
             console.log(ENDDATE);
+            updateSliderAxis()
         }
     }).datepicker("setDate", ENDDATE);
   
