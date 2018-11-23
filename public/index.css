@@ -3,11 +3,11 @@
     margin: auto;
 }
 
-    body {
-      font-family:"avenir next", Arial, sans-serif;
-      font-size: 12px;
-      color: #696969;
-    }
+    /*body {*/
+      /*font-family:"avenir next", Arial, sans-serif;*/
+      /*font-size: 12px;*/
+      /*color: #696969;*/
+    /*}*/
 
     #play-button {
      margin-left: 35px;
@@ -81,3 +81,14 @@
         margin-bottom: 8px;
         margin-left: 12px;
     }
+
+    .bubble-text {
+        text-anchor: middle;
+        alignment-baseline: middle;
+        fill: black;
+        font-weight: bold;
+    }
+
+    .modal-header {
+        border-bottom: 0px;
+  }
