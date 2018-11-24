@@ -11,7 +11,7 @@ let SLIDER_HEIGHT = 80
 let MARGIN = {
     left: 50,
     right: 50,
-    top: 50,
+    top: 20,
     bottom: 10
 }
 
@@ -29,9 +29,10 @@ setshadow()
 let CHART = CANVAS
     .append('g')
     .attr('class', 'chart')
-    .attr('transform', 'translate(' + MARGIN.left + ',' + MARGIN.top + ')')
+    .attr('transform', 'translate(' + MARGIN.left + ',' + (MARGIN.top - 5) + ')')
     .attr('height', CHART_HEIGHT)
     .attr('width', CHART_WIDTH)
+    
     
 let SLIDER = CANVAS
     .append('g')
@@ -86,7 +87,7 @@ let SLIDER_AXIS = d3.svg.axis()
     .ticks(5)
     .tickFormat(FORMATDATE)
 let COLOR_SCALE = d3.scale.category10().domain([0, 1, 2, 3, 4, 5, 6,7, 8,9])
-let SIZE_SCALE = d3.scale.linear().domain([0, 9]).range([20, 70])
+let SIZE_SCALE = d3.scale.linear().domain([0, 9]).range([10, 70])
 SLIDER.append("line")
     .attr("class", "track")
     .attr("x1", SLIDER_SCALE.range()[0])
@@ -115,8 +116,10 @@ let HANDLE = SLIDER.insert("circle", ".track-overlay")
 let SLIDER_LABEL = SLIDER.append("text")
     .attr("class", "label")
     .attr("text-anchor", "middle")
+    .style("font-weight", "bold")
     .text(FORMATDATE(STARTDATE))
-    .attr("transform", "translate(0," + (55) + ")")
+    .attr("font-size", "16px")
+    .attr("transform", "translate(0," + (60) + ")")
 
 
 // SLIDER.insert("g", ".track-overlay")
@@ -176,7 +179,7 @@ function drawBubbles(data) {
         .attr("class", "bubble")
 
     bubbles
-        .attr("r", 15)
+        .attr("r", 10)
         .style("fill", function(d, i) {
             return COLOR_SCALE(i)
         })
@@ -194,12 +197,26 @@ function drawBubbles(data) {
         .append("text")
         .attr("class", "bubble-text")
         .attr("x", function (d) { return d.cx; })
-        .attr("y", function (d) { return d.cy; })
+        .attr("y", function (d, i) { return d.cy + SIZE_SCALE(i) + 10; })
         .text(function(d) { return d.topic; })
-        .attr("font-size", "1px")
         .transition()
         .duration(1000)
         .attr("font-size", "12px")
+
+
+    bubble_group
+        .append("text")
+        .attr("class", "bubble-inner-text")
+        .attr("x", function (d) { return d.cx; })
+        .attr("y", function (d) { return d.cy })
+        .text(function (d, i) { return (10 - i); })
+        .attr("dy", ".35em")
+        .style("fill", "white")
+        .style("font-weight", "bold")
+        .attr("text-anchor", "middle")
+        .transition()
+        .duration(1000)
+        .attr("font-size", function(d, i) {return 14})
 
 
 //     bubbles.enter()
