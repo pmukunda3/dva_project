@@ -160,15 +160,20 @@ d3.csv("", prepare, function (data) {
 
 
 function drawBubbles(data) {
-    let bubbles = CHART.selectAll(".bubble")
+    CHART.selectAll(".bubble-group").remove();
+    let bubble_group = CHART.selectAll(".bubble-group")
         .data(data)
 
-    bubbles.exit().remove();
-    
-    bubbles.enter()
-    .append("circle")
-    .attr("class", "bubble")
-   
+    bubble_group.enter()
+        .append("g")
+        .attr("class", "bubble-group")
+        .on("mouseover", handleMouseOver)
+        .on("mouseout", handleMouseOut)
+        .on("click", handleClick)
+
+    let bubbles = bubble_group
+        .append("circle")
+        .attr("class", "bubble")
 
     bubbles
         .attr("r", 15)
@@ -180,10 +185,22 @@ function drawBubbles(data) {
         .attr("cy", function (d) { return d.cy; })
         .transition()
         .duration(800)
+        .style("opacity", 0.8)
         .attr("r", function (d, i) {
             return SIZE_SCALE(i)
         })
-    
+
+    let text = bubble_group
+        .append("text")
+        .attr("class", "bubble-text")
+        .attr("x", function (d) { return d.cx; })
+        .attr("y", function (d) { return d.cy; })
+        .text(function(d) { return d.topic; })
+        .attr("font-size", "1px")
+        .transition()
+        .duration(1000)
+        .attr("font-size", "12px")
+
 
 //     bubbles.enter()
 //     .append("circle")
@@ -202,6 +219,87 @@ function drawBubbles(data) {
 
         // .transition()
         // .duration(500)
+}
+
+function handleMouseOver(d, i) {
+    if(MOVING == false){
+        group = d3.select(this)
+        group.style('cursor', 'pointer')
+        circle = group.select('circle')
+        BUBBLE_RADIUS = circle.attr('r')
+        circle.attr('r', BUBBLE_RADIUS * 1.1)
+            .style("opacity", .9)
+        group.select('text')
+            .style('font-size', '13.2px')
+    }
+}
+
+function handleMouseOut(d, i) {
+    if(MOVING == false){
+        group = d3.select(this)
+        group.style('cursor', 'none')
+        group.select('circle')
+            .attr('r', BUBBLE_RADIUS)
+            .style("opacity", 1.0)
+        group.select('text')
+            .style('font-size', '12px')
+    }
+
+}
+
+function handleClick(d, i) {
+    if(MOVING == false){
+        d3.select(this).classed('group-clicked', true)
+        $('#newsModal').modal('show')
+    }
+}
+
+// load data on displaying modal
+$('#newsModal').on('show.bs.modal', function() {
+    var d = d3.select(".group-clicked").data().pop();
+    articles = showRelatedNews(d);
+
+})
+
+// reset bubble classes on closing modal
+$('#newsModal').on('hidden.bs.modal', function() {
+    d3.select('.group-clicked').classed('group-clicked', false)
+    d3.select('#articles').html('');
+})
+
+function showRelatedNews(newsId) {
+    d3.json("articles.json", function (data) {
+
+        rowData = d3.select('#articles')
+            .selectAll('tr')
+            .data(data)
+            .enter()
+            .append('tr')
+            .append('td')
+
+        rowData.append('a')
+            .attr('href', function (d) {
+                return d['link']
+            })
+            .attr('target', '_blank')
+            .append('p')
+            .style('font-weight', 'bold')
+            .style('color', 'black')
+            .html(function (d) {
+                return d['headline']
+            })
+        rowData.append('img')
+            .attr('class', 'rounded mx-auto d-block')
+            .attr('src', function (d) {
+                return d['image']
+            })
+        rowData.append('p')
+        rowData.append('p')
+            .html(function (d) {
+                return d['snippet']
+            })
+
+    })
 }
 
 function step() {
@@ -254,7 +352,7 @@ function circleCenterList() {
     let list = []
     for (let x_axis = 100; x_axis <= CHART_WIDTH; x_axis = x_axis + 150) {
         for (let y_axis = 100; y_axis <= CHART_HEIGHT; y_axis = y_axis + 150) {
-            list.push({ "cx": x_axis, "cy": y_axis})
+            list.push({ "cx": x_axis, "cy": y_axis, "topic": "TOPIC No:"+ x_axis + "_" + y_axis})
         }
     }
     return list
