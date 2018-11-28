@@ -2,7 +2,7 @@
 
 // let CANVAS_WIDTH = 1000
 // let CANVAS_HEIGHT = 600
-
+let TIMER = undefined
 let CURRENT_VALUE = 0
 let CHART_WIDTH = 800
 let CHART_HEIGHT = 500
@@ -149,12 +149,12 @@ d3.csv("", prepare, function (data) {
             let button = d3.select(this);
             if (button.text() == "Pause") {
                 MOVING = false;
-                clearInterval(timer);
-                // timer = 0;
+                clearInterval(TIMER);
+                // TIMER = 0;
                 button.text("Play");
             } else {
                 MOVING = true;
-                timer = setInterval(step, 1800);
+                TIMER = setInterval(step, 2300);
                 button.text("Pause");
             }
             console.log("Slider MOVING: " + MOVING);
@@ -190,18 +190,21 @@ function drawBubbles(data) {
         .duration(800)
         .style("opacity", 0.8)
         .attr("r", function (d, i) {
-            return SIZE_SCALE(i)
+            return 50
         })
 
     let text = bubble_group
         .append("text")
         .attr("class", "bubble-text")
         .attr("x", function (d) { return d.cx; })
-        .attr("y", function (d, i) { return d.cy + SIZE_SCALE(i) + 10; })
-        .text(function(d) { return d.topic; })
+        .attr("y", function (d, i) { return d.cy + 65; })
+        .attr("font-size", "6px")
+        // .attr("y", function (d, i) { return d.cy + SIZE_SCALE(i) + 10; })
+        
         .transition()
-        .duration(1000)
-        .attr("font-size", "12px")
+        .duration(800)
+        .text(function (d) { return d.topic; })
+        .attr("font-size", "13px")
 
 
     bubble_group
@@ -215,8 +218,8 @@ function drawBubbles(data) {
         .style("font-weight", "bold")
         .attr("text-anchor", "middle")
         .transition()
-        .duration(1000)
-        .attr("font-size", function(d, i) {return 14})
+        .duration(800)
+        .attr("font-size", function(d, i) {return 17})
 
 
 //     bubbles.enter()
@@ -360,7 +363,8 @@ function update() {
     SLIDER_LABEL
         .attr("x", numeric_value)
         .text(FORMATDATE(date_value));
-    let data = getRandomBubble(BUBBLE_DATA, 10)
+    // let data = getRandomBubble(BUBBLE_DATA, 10)
+    let data = BUBBLE_DATA
     drawBubbles(data)
 
 }
@@ -372,9 +376,29 @@ function circleCenterList() {
             list.push({ "cx": x_axis, "cy": y_axis, "topic": "TOPIC No:"+ x_axis + "_" + y_axis})
         }
     }
-    return list
+    let left_padding_three = 130
+    let left_padding_four = 70
+
+    let space_three = 0
+    let space_four = 0
+    return [{ cx: left_padding_three + 400 + space_three, cy: 400, topic: "TOPIC No:400_400" },
+        { cx: left_padding_three + 250 + space_three, cy: 400, topic: "TOPIC No:250_400" },
+        { cx: left_padding_three + 100 , cy: 400, topic: "TOPIC No:100_400" },
+        { cx: left_padding_four + 550 + space_four, cy: 250, topic: "TOPIC No:550_250" },
+        { cx: left_padding_four + 400 + space_four, cy: 250, topic: "TOPIC No:400_250" },
+        { cx: left_padding_four + 250 + space_four, cy: 250, topic: "TOPIC No:250_250" },
+        { cx: left_padding_four + 100, cy: 250, topic: "TOPIC No:100_250" },
+        { cx: left_padding_three + 400 + space_three, cy: 100, topic: "TOPIC No:400_100" },
+        { cx: left_padding_three + 250 + space_three, cy: 100, topic: "TOPIC No:250_100" },
+        { cx: left_padding_three + 100, cy: 100, topic: "TOPIC No:100_100" },
+    
+    ]
 }
 
+// { cx: 550, cy: 400, topic: "TOPIC No:550_400" },
+// { cx: 700, cy: 100, topic: "TOPIC No:700_100" },
+// 13: { cx: 700, cy: 250, topic: "TOPIC No:700_250" },
+// 14: { cx: 700, cy: 400, topic: "TOPIC No:700_400" }
 function getRandomBubble(data, size) {
     return _.shuffle(data).slice(0, size)
 }
@@ -432,8 +456,8 @@ function updateSliderAxis() {
 function resetSlider() {
     MOVING = false;
     CURRENT_SLIDER_VALUE = 0;
-    clearInterval(timer);
-    // timer = 0;
+    clearInterval(TIMER);
+    // TIMER = 0;
     playButton.text("Play");
  
 }
