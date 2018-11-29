@@ -288,7 +288,7 @@ $('#newsModal').on('hidden.bs.modal', function() {
 })
 
 function showRelatedNews(newsId) {
-    d3.json("articles.json", function (data) {
+    d3.json("olympics.json", function (data) {
 
         rowData = d3.select('#articles')
             .selectAll('tr')
@@ -299,24 +299,26 @@ function showRelatedNews(newsId) {
 
         rowData.append('a')
             .attr('href', function (d) {
-                return d['link']
+                return d['web_url']
             })
             .attr('target', '_blank')
             .append('p')
             .style('font-weight', 'bold')
             .style('color', 'black')
             .html(function (d) {
-                return d['headline']
+                let headlines = d['headlines']
+                return headlines.substring(1, headlines.length-1)
             })
         rowData.append('img')
             .attr('class', 'rounded mx-auto d-block')
             .attr('src', function (d) {
-                return d['image']
+                return d['image_url']
             })
         rowData.append('p')
         rowData.append('p')
             .html(function (d) {
-                return d['snippet']
+                let snippet = d['snippet']
+                return snippet.substring(1, snippet.length-1)
             })
 
     })
