@@ -2,12 +2,14 @@
 
 // let CANVAS_WIDTH = 1000
 // let CANVAS_HEIGHT = 600
-
+let TIMER = undefined
 let CURRENT_VALUE = 0
 let CHART_WIDTH = 800
 let CHART_HEIGHT = 500
 let SLIDER_WIDTH = CHART_WIDTH
 let SLIDER_HEIGHT = 80
+let BUBBLE_DATA = 'CONTAIN ALL DATA'
+
 let MARGIN = {
     left: 50,
     right: 50,
@@ -137,7 +139,7 @@ let SLIDER_LABEL = SLIDER.append("text")
 
 
 // ###################### CIRCLES #######################
-let BUBBLE_DATA = circleCenterList()
+
 
 
 d3.csv("", prepare, function (data) {
@@ -149,12 +151,12 @@ d3.csv("", prepare, function (data) {
             let button = d3.select(this);
             if (button.text() == "Pause") {
                 MOVING = false;
-                clearInterval(timer);
-                // timer = 0;
+                clearInterval(TIMER);
+                // TIMER = 0;
                 button.text("Play");
             } else {
                 MOVING = true;
-                timer = setInterval(step, 1800);
+                TIMER = setInterval(step, 2300);
                 button.text("Pause");
             }
             console.log("Slider MOVING: " + MOVING);
@@ -190,18 +192,21 @@ function drawBubbles(data) {
         .duration(800)
         .style("opacity", 0.8)
         .attr("r", function (d, i) {
-            return SIZE_SCALE(i)
+            return 50
         })
 
     let text = bubble_group
         .append("text")
         .attr("class", "bubble-text")
         .attr("x", function (d) { return d.cx; })
-        .attr("y", function (d, i) { return d.cy + SIZE_SCALE(i) + 10; })
-        .text(function(d) { return d.topic; })
+        .attr("y", function (d, i) { return d.cy + 65; })
+        .attr("font-size", "6px")
+        // .attr("y", function (d, i) { return d.cy + SIZE_SCALE(i) + 10; })
+        
         .transition()
-        .duration(1000)
-        .attr("font-size", "12px")
+        .duration(800)
+        .text(function (d) { return d.topic; })
+        .attr("font-size", "14px")
 
 
     bubble_group
@@ -209,14 +214,14 @@ function drawBubbles(data) {
         .attr("class", "bubble-inner-text")
         .attr("x", function (d) { return d.cx; })
         .attr("y", function (d) { return d.cy })
-        .text(function (d, i) { return (10 - i); })
+        .text(function (d, i) { return i + 1; })
         .attr("dy", ".35em")
         .style("fill", "white")
         .style("font-weight", "bold")
         .attr("text-anchor", "middle")
         .transition()
-        .duration(1000)
-        .attr("font-size", function(d, i) {return 14})
+        .duration(800)
+        .attr("font-size", function(d, i) {return 17})
 
 
 //     bubbles.enter()
@@ -285,7 +290,7 @@ $('#newsModal').on('hidden.bs.modal', function() {
 })
 
 function showRelatedNews(newsId) {
-    d3.json("articles.json", function (data) {
+    d3.json("olympics.json", function (data) {
 
         rowData = d3.select('#articles')
             .selectAll('tr')
@@ -296,35 +301,41 @@ function showRelatedNews(newsId) {
 
         rowData.append('a')
             .attr('href', function (d) {
-                return d['link']
+                return d['web_url']
             })
             .attr('target', '_blank')
             .append('p')
             .style('font-weight', 'bold')
             .style('color', 'black')
             .html(function (d) {
-                return d['headline']
+                let headlines = d['headlines']
+                return headlines.substring(1, headlines.length-1)
             })
         rowData.append('img')
-            .attr('class', 'rounded mx-auto d-block')
+            .attr('class', 'rounded d-block')
             .attr('src', function (d) {
-                return d['image']
+                return d['image_url']
             })
         rowData.append('p')
         rowData.append('p')
             .html(function (d) {
-                return d['snippet']
+                let snippet = d['snippet']
+                return snippet.substring(1, snippet.length-1)
             })
 
     })
 }
 
 function step() {
-    update();
     CURRENT_SLIDER_VALUE = CURRENT_SLIDER_VALUE + (SLIDER_WIDTH / SLIDER_STEPS);
+    update();
     if (CURRENT_SLIDER_VALUE > SLIDER_WIDTH) {
         resetSlider()
     }
+}
+
+function calculate_steps() {
+
 }
 
 
@@ -360,21 +371,52 @@ function update() {
     SLIDER_LABEL
         .attr("x", numeric_value)
         .text(FORMATDATE(date_value));
-    let data = getRandomBubble(BUBBLE_DATA, 10)
+    // let data = getRandomBubble(BUBBLE_DATA, 10)
+
+    let data = add_new_data(current_date)
     drawBubbles(data)
 
 }
 
-function circleCenterList() {
-    let list = []
-    for (let x_axis = 100; x_axis <= CHART_WIDTH; x_axis = x_axis + 150) {
-        for (let y_axis = 100; y_axis <= CHART_HEIGHT; y_axis = y_axis + 150) {
-            list.push({ "cx": x_axis, "cy": y_axis, "topic": "TOPIC No:"+ x_axis + "_" + y_axis})
-        }
+function add_new_data(current_date) {
+    current_data = BUBBLE_DATA[current_date]
+    let center = [
+        { cx: left_padding_three + 100, cy: 100 - 10, "topic": ""},
+        { cx: left_padding_three + 250 + space_three, cy: 100 - 10 ,"topic": ""},
+        { cx: left_padding_three + 400 + space_three, cy: 100 - 10, "topic": "" },
+        { cx: left_padding_four + 100 - 20, cy: 250, "topic": "" },
+        { cx: left_padding_four + 250, cy: 250, "topic": "" },
+        { cx: left_padding_four + 400 + 10, cy: 250, "topic": "" },
+        { cx: left_padding_four + 550 + 20, cy: 250, "topic": "" },
+        { cx: left_padding_three + 100, cy: 400 + 10, "topic": "" },
+        { cx: left_padding_three + 250 + space_three, cy: 400 + 10, "topic": "" },
+        { cx: left_padding_three + 400 + space_three, cy: 400 + 10, "topic": "" },
+    ]
+    for (i = 0; i < center.length; i++) {
+       center[i]['topic'] = values[i]
     }
-    return list
-}
 
+    return center
+}
+// function circleCenterList() {
+//     let list = []
+//     for (let x_axis = 100; x_axis <= CHART_WIDTH; x_axis = x_axis + 150) {
+//         for (let y_axis = 100; y_axis <= CHART_HEIGHT; y_axis = y_axis + 150) {
+//             list.push({ "cx": x_axis, "cy": y_axis, "topic": "TOPIC No:"+ x_axis + "_" + y_axis})
+//         }
+//     }
+//     let left_padding_three = 130
+//     let left_padding_four = 70
+
+//     let space_three = 0
+//     let space_four = 0
+//     return
+// }
+
+// { cx: 550, cy: 400, topic: "TOPIC No:550_400" },
+// { cx: 700, cy: 100, topic: "TOPIC No:700_100" },
+// 13: { cx: 700, cy: 250, topic: "TOPIC No:700_250" },
+// 14: { cx: 700, cy: 400, topic: "TOPIC No:700_400" }
 function getRandomBubble(data, size) {
     return _.shuffle(data).slice(0, size)
 }
@@ -432,8 +474,8 @@ function updateSliderAxis() {
 function resetSlider() {
     MOVING = false;
     CURRENT_SLIDER_VALUE = 0;
-    clearInterval(timer);
-    // timer = 0;
+    clearInterval(TIMER);
+    // TIMER = 0;
     playButton.text("Play");
  
 }

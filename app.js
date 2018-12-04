@@ -1,11 +1,17 @@
 const Hapi = require('Hapi');
 const inert = require('inert');
+const path = require('path')
 
 // asynce is needed for all functions with asynchronous calls
 async function init_server() {
   let conn = {
     host: process.env.HOST || 'localhost',
-    port: process.env.PORT || 3000
+    port: process.env.PORT || 3000,
+    routes: {
+      files: {
+        relativeTo: path.join(__dirname, 'public')
+      }
+    }
   };
 
   // initialize server
