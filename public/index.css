@@ -92,3 +92,9 @@
     .modal-header {
         border-bottom: 0px;
   }
+
+  img {
+    width: 300px;
+    float: right;
+    margin-left: 20px !important;
+  }

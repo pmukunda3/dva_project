@@ -8,6 +8,8 @@ let CHART_WIDTH = 800
 let CHART_HEIGHT = 500
 let SLIDER_WIDTH = CHART_WIDTH
 let SLIDER_HEIGHT = 80
+let BUBBLE_DATA = 'CONTAIN ALL DATA'
+
 let MARGIN = {
     left: 50,
     right: 50,
@@ -137,7 +139,7 @@ let SLIDER_LABEL = SLIDER.append("text")
 
 
 // ###################### CIRCLES #######################
-let BUBBLE_DATA = circleCenterList()
+
 
 
 d3.csv("", prepare, function (data) {
@@ -204,7 +206,7 @@ function drawBubbles(data) {
         .transition()
         .duration(800)
         .text(function (d) { return d.topic; })
-        .attr("font-size", "13px")
+        .attr("font-size", "14px")
 
 
     bubble_group
@@ -212,7 +214,7 @@ function drawBubbles(data) {
         .attr("class", "bubble-inner-text")
         .attr("x", function (d) { return d.cx; })
         .attr("y", function (d) { return d.cy })
-        .text(function (d, i) { return (10 - i); })
+        .text(function (d, i) { return i + 1; })
         .attr("dy", ".35em")
         .style("fill", "white")
         .style("font-weight", "bold")
@@ -310,7 +312,7 @@ function showRelatedNews(newsId) {
                 return headlines.substring(1, headlines.length-1)
             })
         rowData.append('img')
-            .attr('class', 'rounded mx-auto d-block')
+            .attr('class', 'rounded d-block')
             .attr('src', function (d) {
                 return d['image_url']
             })
@@ -325,11 +327,15 @@ function showRelatedNews(newsId) {
 }
 
 function step() {
-    update();
     CURRENT_SLIDER_VALUE = CURRENT_SLIDER_VALUE + (SLIDER_WIDTH / SLIDER_STEPS);
+    update();
     if (CURRENT_SLIDER_VALUE > SLIDER_WIDTH) {
         resetSlider()
     }
+}
+
+function calculate_steps() {
+
 }
 
 
@@ -366,36 +372,46 @@ function update() {
         .attr("x", numeric_value)
         .text(FORMATDATE(date_value));
     // let data = getRandomBubble(BUBBLE_DATA, 10)
-    let data = BUBBLE_DATA
+
+    let data = add_new_data(current_date)
     drawBubbles(data)
 
 }
 
-function circleCenterList() {
-    let list = []
-    for (let x_axis = 100; x_axis <= CHART_WIDTH; x_axis = x_axis + 150) {
-        for (let y_axis = 100; y_axis <= CHART_HEIGHT; y_axis = y_axis + 150) {
-            list.push({ "cx": x_axis, "cy": y_axis, "topic": "TOPIC No:"+ x_axis + "_" + y_axis})
-        }
-    }
-    let left_padding_three = 130
-    let left_padding_four = 70
-
-    let space_three = 0
-    let space_four = 0
-    return [{ cx: left_padding_three + 400 + space_three, cy: 400, topic: "TOPIC No:400_400" },
-        { cx: left_padding_three + 250 + space_three, cy: 400, topic: "TOPIC No:250_400" },
-        { cx: left_padding_three + 100 , cy: 400, topic: "TOPIC No:100_400" },
-        { cx: left_padding_four + 550 + space_four, cy: 250, topic: "TOPIC No:550_250" },
-        { cx: left_padding_four + 400 + space_four, cy: 250, topic: "TOPIC No:400_250" },
-        { cx: left_padding_four + 250 + space_four, cy: 250, topic: "TOPIC No:250_250" },
-        { cx: left_padding_four + 100, cy: 250, topic: "TOPIC No:100_250" },
-        { cx: left_padding_three + 400 + space_three, cy: 100, topic: "TOPIC No:400_100" },
-        { cx: left_padding_three + 250 + space_three, cy: 100, topic: "TOPIC No:250_100" },
-        { cx: left_padding_three + 100, cy: 100, topic: "TOPIC No:100_100" },
-    
+function add_new_data(current_date) {
+    current_data = BUBBLE_DATA[current_date]
+    let center = [
+        { cx: left_padding_three + 100, cy: 100 - 10, "topic": ""},
+        { cx: left_padding_three + 250 + space_three, cy: 100 - 10 ,"topic": ""},
+        { cx: left_padding_three + 400 + space_three, cy: 100 - 10, "topic": "" },
+        { cx: left_padding_four + 100 - 20, cy: 250, "topic": "" },
+        { cx: left_padding_four + 250, cy: 250, "topic": "" },
+        { cx: left_padding_four + 400 + 10, cy: 250, "topic": "" },
+        { cx: left_padding_four + 550 + 20, cy: 250, "topic": "" },
+        { cx: left_padding_three + 100, cy: 400 + 10, "topic": "" },
+        { cx: left_padding_three + 250 + space_three, cy: 400 + 10, "topic": "" },
+        { cx: left_padding_three + 400 + space_three, cy: 400 + 10, "topic": "" },
     ]
+    for (i = 0; i < center.length; i++) {
+       center[i]['topic'] = values[i]
+    }
+
+    return center
 }
+// function circleCenterList() {
+//     let list = []
+//     for (let x_axis = 100; x_axis <= CHART_WIDTH; x_axis = x_axis + 150) {
+//         for (let y_axis = 100; y_axis <= CHART_HEIGHT; y_axis = y_axis + 150) {
+//             list.push({ "cx": x_axis, "cy": y_axis, "topic": "TOPIC No:"+ x_axis + "_" + y_axis})
+//         }
+//     }
+//     let left_padding_three = 130
+//     let left_padding_four = 70
+
+//     let space_three = 0
+//     let space_four = 0
+//     return
+// }
 
 // { cx: 550, cy: 400, topic: "TOPIC No:550_400" },
 // { cx: 700, cy: 100, topic: "TOPIC No:700_100" },
