@@ -41,10 +41,9 @@ $(function () {
            $.ajax({
                url: "http://localhost:3000/health"
             }).then(function (data) {
-                console.log(STARTDATE);
-                console.log(ENDDATE);
                 updateSliderAxis()
                 BUBBLE_DATA = data
+               update()
             })
         } else {
             alert(' Start date must come before end date!')

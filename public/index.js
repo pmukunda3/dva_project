@@ -77,20 +77,15 @@ let MOVING = false;
 let CURRENT_SLIDER_VALUE = 0
 let SLIDER_STEPS = (ENDDATE.getFullYear() - STARTDATE.getFullYear()) * 10
 
-console.log("SLIDER_STEPS", ENDDATE.getFullYear(), STARTDATE.getFullYear())
-
 let playButton = d3.select("#play-button");
 
 // TODO: -- GET DATES FROM THE INPUT BOX AND PUT IT HERE ---
 
 
-console.log("SLIDER SCALE", STARTDATE)
-console.log("SLIDER SCALE", ENDDATE)
 let SLIDER_SCALE = d3.time.scale()
     .domain([STARTDATE, ENDDATE])
     .range([0, SLIDER_WIDTH])
     .clamp(true);
-console.log("SLIDER SCALE", SLIDER_SCALE(STARTDATE))
 
 let SLIDER_AXIS = d3.svg.axis()
     .scale(SLIDER_SCALE)
@@ -154,7 +149,6 @@ let SLIDER_LABEL = SLIDER.append("text")
 d3.csv("", prepare, function (data) {
     dataset = data;
     // drawPlot(dataset);
-    console.log("prepare() in d3.csv", data)
 
     playButton
         .on("click", function () {
@@ -358,8 +352,6 @@ function sleep(ms) {
 
 async function step() {
     CURRENT_SLIDER_VALUE = CURRENT_SLIDER_VALUE + (SLIDER_WIDTH / SLIDER_STEPS);
-    console.log("CURRENT_SLIDER_VALUE", CURRENT_SLIDER_VALUE, SLIDER_STEPS);
-    console.log("step() CURRENT_SLIDER_VALUE", CURRENT_SLIDER_VALUE)
     await sleep(2000);
     update();
     if (CURRENT_SLIDER_VALUE > SLIDER_WIDTH) {
@@ -375,7 +367,6 @@ function calculate_steps() {
 
 function prepare(d) {
     d.id = d.id;
-    console.log('prepare() in function prepare', d.date);
     d.date = PARSEDATE(d.date);
     return d;
 }
@@ -420,13 +411,11 @@ function update() {
     let numeric_value = SLIDER_SCALE(date_value)
     HANDLE.attr("cx", numeric_value);
 
-    console.log("format inside update()", date_value, "FORMATDATE", FORMATDATE(date_value))
     SLIDER_LABEL
         .attr("x", numeric_value)
         .text(FORMATDATE(date_value));
     // let data = getRandomBubble(BUBBLE_DATA, 10)
 
-    console.log(date_value);
     YEAR = get_year(date_value);
     MONTH = get_month(date_value);
     let data = add_new_data(YEAR, MONTH);
@@ -535,8 +524,7 @@ function setshadow() {
 
 function updateSliderAxis() {
     SLIDER_SCALE.domain([STARTDATE, ENDDATE])
-    console.log("updateSliderAxis", STARTDATE, ENDDATE)
-    
+
     SLIDER.select(".slider-axis")
         .transition()
         .duration(500)
@@ -548,7 +536,6 @@ function updateSliderAxis() {
         .text(FORMATDATE(STARTDATE));
     resetSlider()
 
-    console.log("updateSliderAxis", SLIDER_SCALE(STARTDATE), FORMATDATE(STARTDATE))
 }
 
 function resetSlider() {
