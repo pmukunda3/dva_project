@@ -106,8 +106,15 @@ module.exports = server => {
         return getAsync(keyword).then(function(res){
           console.log('Keyword:', keyword);
           console.log('Response from Redis:', res);
-          let articles = JSON.parse(res);
-          articles = (articles != null ? articles.slice(0, 10) : articles);
+          let data = JSON.parse(res);
+          let articles = [];
+          for(let i=0, counter=0; data != null & counter<10 & i < data.length; i++){
+            if(data[i]['image_url']) {
+              articles.push(data[i]);
+              counter++;
+            }
+          }
+          // articles = (articles != null ? articles.slice(0, 10) : articles);
           console.log('Zipped Response from Redis:', articles);
           return articles;
         });

@@ -1,28 +1,37 @@
 
 // let STARTDATE = new Date("1996-04-01")
 // let ENDDATE = new Date("1997-04-01");
-let STARTDATE = new Date("2015-01-01")
-let ENDDATE = new Date("2017-01-02");
+let STARTDATE = new Date("2016-04-01")
+let ENDDATE = new Date("2017-04-01");
+let YEARRANGE = '1916:2018'
+
+$("#date-from").datepicker("setDate", STARTDATE);
+$("#date-to").datepicker("setDate", ENDDATE);
+
 $(function () {
     
     $("#date-from").datepicker({
         // minDate: new Date("1996-01-02"),
         // maxDate: new Date("2007-01-01"),
-        minDate: new Date("2015-01-02"),
-        maxDate: new Date("2017-01-01"),
+        yearRange: YEARRANGE,
+        changeYear: true,
+        changeMonth: true,
+        dateFormat: 'MM yy',
         onSelect: function () {
             STARTDATE = new Date(this.value)
+            console.log("updated",STARTDATE)
             
         }
     }).datepicker("setDate", STARTDATE);
     $("#date-to").datepicker({
         // minDate: new Date("1996-01-02"),
         // maxDate: new Date("2007-01-01"),
-        minDate: new Date("2015-01-02"),
-        maxDate: new Date("2017-01-01"),
+        yearRange: YEARRANGE,
+        changeYear: true,
+        changeMonth: true,
+        dateFormat: 'MM yy',
         onSelect: function () {
             ENDDATE = new Date(this.value)
-            console.log(ENDDATE);
         }
     }).datepicker("setDate", ENDDATE);
     
@@ -32,6 +41,8 @@ $(function () {
            $.ajax({
                url: "http://localhost:3000/health"
             }).then(function (data) {
+                console.log(STARTDATE);
+                console.log(ENDDATE);
                 updateSliderAxis()
                 BUBBLE_DATA = data
             })

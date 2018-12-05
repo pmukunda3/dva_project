@@ -4,11 +4,12 @@
 // let CANVAS_HEIGHT = 600
 let TIMER = undefined
 let CURRENT_VALUE = 0
-let CHART_WIDTH = 800
+let CHART_WIDTH = 900
 let CHART_HEIGHT = 500
 let SLIDER_WIDTH = CHART_WIDTH
 let SLIDER_HEIGHT = 80
 let BUBBLE_DATA = 'CONTAIN ALL DATA'
+var YEAR, MONTH;
 
 $.ajaxSetup({
     async: false
@@ -76,16 +77,20 @@ let MOVING = false;
 let CURRENT_SLIDER_VALUE = 0
 let SLIDER_STEPS = (ENDDATE.getFullYear() - STARTDATE.getFullYear()) * 10
 
+console.log("SLIDER_STEPS", ENDDATE.getFullYear(), STARTDATE.getFullYear())
 
 let playButton = d3.select("#play-button");
 
 // TODO: -- GET DATES FROM THE INPUT BOX AND PUT IT HERE ---
 
 
+console.log("SLIDER SCALE", STARTDATE)
+console.log("SLIDER SCALE", ENDDATE)
 let SLIDER_SCALE = d3.time.scale()
     .domain([STARTDATE, ENDDATE])
     .range([0, SLIDER_WIDTH])
     .clamp(true);
+console.log("SLIDER SCALE", SLIDER_SCALE(STARTDATE))
 
 let SLIDER_AXIS = d3.svg.axis()
     .scale(SLIDER_SCALE)
@@ -149,6 +154,7 @@ let SLIDER_LABEL = SLIDER.append("text")
 d3.csv("", prepare, function (data) {
     dataset = data;
     // drawPlot(dataset);
+    console.log("prepare() in d3.csv", data)
 
     playButton
         .on("click", function () {
@@ -282,60 +288,84 @@ function handleClick(d, i) {
 
 // load data on displaying modal
 $('#newsModal').on('show.bs.modal', function() {
-    var d = d3.select(".group-clicked").data().pop();
-    topics = showRelatedNews(d);
-
+    let data = d3.select(".group-clicked").data().pop();
+    let topic = data['topic'];
+    if (topic != null) {
+        topic = topic.toLowerCase().replace(/ /g, '~');
+    }
+    topics = showRelatedNews(topic);
 })
 
 // reset bubble classes on closing modal
 $('#newsModal').on('hidden.bs.modal', function() {
     d3.select('.group-clicked').classed('group-clicked', false)
-    d3.select('#topics').html('');
+    d3.select('#articles').html('');
 })
 
-function showRelatedNews(newsId) {
-    d3.json("olympics.json", function (data) {
+function showRelatedNews(topic) {
+    // let date_value = SLIDER_SCALE.invert(CURRENT_SLIDER_VALUE)
+    // console.log(date_value);
+    // YEAR = get_year(date_value);
+    // MONTH = get_month(date_value);
 
-        rowData = d3.select('#topics')
-            .selectAll('tr')
-            .data(data)
-            .enter()
-            .append('tr')
-            .append('td')
-
-        rowData.append('a')
-            .attr('href', function (d) {
-                return d['web_url']
-            })
-            .attr('target', '_blank')
-            .append('p')
-            .style('font-weight', 'bold')
-            .style('color', 'black')
-            .html(function (d) {
-                let headlines = d['headlines']
-                return headlines.substring(1, headlines.length-1)
-            })
-        rowData.append('img')
-            .attr('class', 'rounded d-block')
-            .attr('src', function (d) {
-                return d['image_url']
-            })
-        rowData.append('p')
-        rowData.append('p')
-            .html(function (d) {
-                let snippet = d['snippet']
-                return snippet.substring(1, snippet.length-1)
-            })
-
+    console.log('Topic:', topic);
+    let articles;
+    let url = 'http://localhost:3000/articles/' + topic + '/' + YEAR;
+    if(MONTH != null){
+        url = url + '/' + MONTH;
+    }
+    console.log('Article URL:', url);
+    $.getJSON(url, function (data) {
+        articles = data;
     })
+    console.log('Articles', articles);
+
+    rowData = d3.select('#articles')
+        .selectAll('tr')
+        .data(articles)
+        .enter()
+        .append('tr')
+        .append('td');
+
+    rowData.append('a')
+        .attr('href', function (d) {
+            return d['web_url']
+        })
+        .attr('target', '_blank')
+        .append('p')
+        .style('font-weight', 'bold')
+        .style('color', 'black')
+        .html(function (d) {
+            let headlines = d['headlines']
+            return headlines.substring(1, headlines.length - 1)
+        });
+    rowData.append('img')
+        .attr('class', 'rounded d-block')
+        .attr('src', function (d) {
+            return d['image_url']
+        });
+    rowData.append('p');
+    rowData.append('p')
+        .html(function (d) {
+            let snippet = d['snippet']
+            return snippet.substring(1, snippet.length - 1)
+        });
 }
 
-function step() {
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function step() {
     CURRENT_SLIDER_VALUE = CURRENT_SLIDER_VALUE + (SLIDER_WIDTH / SLIDER_STEPS);
+    console.log("CURRENT_SLIDER_VALUE", CURRENT_SLIDER_VALUE, SLIDER_STEPS);
+    console.log("step() CURRENT_SLIDER_VALUE", CURRENT_SLIDER_VALUE)
+    await sleep(2000);
     update();
     if (CURRENT_SLIDER_VALUE > SLIDER_WIDTH) {
         resetSlider()
     }
+
 }
 
 function calculate_steps() {
@@ -345,6 +375,7 @@ function calculate_steps() {
 
 function prepare(d) {
     d.id = d.id;
+    console.log('prepare() in function prepare', d.date);
     d.date = PARSEDATE(d.date);
     return d;
 }
@@ -389,15 +420,16 @@ function update() {
     let numeric_value = SLIDER_SCALE(date_value)
     HANDLE.attr("cx", numeric_value);
 
+    console.log("format inside update()", date_value, "FORMATDATE", FORMATDATE(date_value))
     SLIDER_LABEL
         .attr("x", numeric_value)
         .text(FORMATDATE(date_value));
     // let data = getRandomBubble(BUBBLE_DATA, 10)
 
     console.log(date_value);
-    let year = get_year(date_value);
-    let month = get_month(date_value);
-    let data = add_new_data(year, month);
+    YEAR = get_year(date_value);
+    MONTH = get_month(date_value);
+    let data = add_new_data(YEAR, MONTH);
     drawBubbles(data)
 
 }
@@ -407,32 +439,38 @@ function add_new_data(year, month) {
     if(month != null){
         url = url + '/' + month;
     }
-    console.log('URL:', url);
-    let current_data;
+    console.log('Topic URL:', url);
+    let current_data = null;
     $.getJSON(url, function (data) {
         current_data = data;
     })
     console.log(current_data);
+    if(current_data == null){
+        return [];
+    }
 
-    let left_padding_three = 130;
-    let left_padding_four = 70;
+    let left_padding_three = 175;
+    let left_padding_four = 115;
     let space_three = 0;
 
     // initally: 100, 250, 400; 100 - 20, 250, 400 + 10, 550 + 20
     let center = [
         { cx: left_padding_three + 100 - 60, cy: 100 - 10, "topic": ""},
-        { cx: left_padding_three + 250 + space_three, cy: 100 - 10 ,"topic": ""},
-        { cx: left_padding_three + 400 + 60 + space_three, cy: 100 - 10, "topic": "" },
-        { cx: left_padding_four + 100 - 20 - 30, cy: 250, "topic": "" },
-        { cx: left_padding_four + 250 - 10, cy: 250, "topic": "" },
-        { cx: left_padding_four + 400 + 10 + 10, cy: 250, "topic": "" },
-        { cx: left_padding_four + 550 + 20 + 30, cy: 250, "topic": "" },
+        { cx: left_padding_three + 250 + 10 + space_three, cy: 100 - 10 ,"topic": ""},
+        { cx: left_padding_three + 400 + 80 + space_three, cy: 100 - 10, "topic": "" },
+        { cx: left_padding_four + 100 - 20 - 50, cy: 250, "topic": "" },
+        { cx: left_padding_four + 250 - 25, cy: 250, "topic": "" },
+        { cx: left_padding_four + 400 + 10 + 20, cy: 250, "topic": "" },
+        { cx: left_padding_four + 550 + 20 + 50, cy: 250, "topic": "" },
         { cx: left_padding_three + 100 - 60, cy: 400 + 10, "topic": "" },
-        { cx: left_padding_three + 250 + space_three, cy: 400 + 10, "topic": "" },
-        { cx: left_padding_three + 400 + 60 + space_three, cy: 400 + 10, "topic": "" },
+        { cx: left_padding_three + 250 + 10 + space_three, cy: 400 + 10, "topic": "" },
+        { cx: left_padding_three + 400 + 80 + space_three, cy: 400 + 10, "topic": "" },
     ]
     for (i = 0; i < center.length; i++) {
-       center[i]['topic'] = current_data[i]['keyword'];
+        center[i]['topic'] = current_data[i]['keyword'];
+        if(current_data != null & current_data.length<i+1 & current_data[i] != null) {
+
+        }
     }
 
     return center
@@ -495,8 +533,9 @@ function setshadow() {
 }
 
 
-function uupdateSliderAxis() {
+function updateSliderAxis() {
     SLIDER_SCALE.domain([STARTDATE, ENDDATE])
+    console.log("updateSliderAxis", STARTDATE, ENDDATE)
     
     SLIDER.select(".slider-axis")
         .transition()
@@ -508,6 +547,8 @@ function uupdateSliderAxis() {
         .attr("x", SLIDER_SCALE(STARTDATE))
         .text(FORMATDATE(STARTDATE));
     resetSlider()
+
+    console.log("updateSliderAxis", SLIDER_SCALE(STARTDATE), FORMATDATE(STARTDATE))
 }
 
 function resetSlider() {
