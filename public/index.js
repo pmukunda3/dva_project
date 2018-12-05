@@ -10,6 +10,10 @@ let SLIDER_WIDTH = CHART_WIDTH
 let SLIDER_HEIGHT = 80
 let BUBBLE_DATA = 'CONTAIN ALL DATA'
 
+$.ajaxSetup({
+    async: false
+});
+
 let MARGIN = {
     left: 50,
     right: 50,
@@ -206,7 +210,7 @@ function drawBubbles(data) {
         .transition()
         .duration(800)
         .text(function (d) { return d.topic; })
-        .attr("font-size", "14px")
+        .attr("font-size", "12.4px")
 
 
     bubble_group
@@ -252,7 +256,7 @@ function handleMouseOver(d, i) {
         circle.attr('r', BUBBLE_RADIUS * 1.1)
             .style("opacity", .9)
         group.select('text')
-            .style('font-size', '13.2px')
+            .style('font-size', '14.88px')
     }
 }
 
@@ -264,7 +268,7 @@ function handleMouseOut(d, i) {
             .attr('r', BUBBLE_RADIUS)
             .style("opacity", 1.0)
         group.select('text')
-            .style('font-size', '12px')
+            .style('font-size', '12.4px')
     }
 
 }
@@ -279,20 +283,20 @@ function handleClick(d, i) {
 // load data on displaying modal
 $('#newsModal').on('show.bs.modal', function() {
     var d = d3.select(".group-clicked").data().pop();
-    articles = showRelatedNews(d);
+    topics = showRelatedNews(d);
 
 })
 
 // reset bubble classes on closing modal
 $('#newsModal').on('hidden.bs.modal', function() {
     d3.select('.group-clicked').classed('group-clicked', false)
-    d3.select('#articles').html('');
+    d3.select('#topics').html('');
 })
 
 function showRelatedNews(newsId) {
     d3.json("olympics.json", function (data) {
 
-        rowData = d3.select('#articles')
+        rowData = d3.select('#topics')
             .selectAll('tr')
             .data(data)
             .enter()
@@ -363,6 +367,23 @@ function dragended() {
     console.log("drag ended")
 }
 
+function get_year(date){
+    if(date == null){
+        return date;
+    }
+    let year = 1900 + date.getYear();
+    console.log('Year:', year);
+    return year;
+}
+
+function get_month(date){
+    if(date == null){
+        return date;
+    }
+    console.log('Month:', date.getMonth());
+    return date.getMonth() + 1;
+}
+
 function update() {
     let date_value = SLIDER_SCALE.invert(CURRENT_SLIDER_VALUE)
     let numeric_value = SLIDER_SCALE(date_value)
@@ -373,27 +394,45 @@ function update() {
         .text(FORMATDATE(date_value));
     // let data = getRandomBubble(BUBBLE_DATA, 10)
 
-    let data = add_new_data(current_date)
+    console.log(date_value);
+    let year = get_year(date_value);
+    let month = get_month(date_value);
+    let data = add_new_data(year, month);
     drawBubbles(data)
 
 }
 
-function add_new_data(current_date) {
-    current_data = BUBBLE_DATA[current_date]
+function add_new_data(year, month) {
+    let url = 'http://localhost:3000/topics/' + year;
+    if(month != null){
+        url = url + '/' + month;
+    }
+    console.log('URL:', url);
+    let current_data;
+    $.getJSON(url, function (data) {
+        current_data = data;
+    })
+    console.log(current_data);
+
+    let left_padding_three = 130;
+    let left_padding_four = 70;
+    let space_three = 0;
+
+    // initally: 100, 250, 400; 100 - 20, 250, 400 + 10, 550 + 20
     let center = [
-        { cx: left_padding_three + 100, cy: 100 - 10, "topic": ""},
+        { cx: left_padding_three + 100 - 60, cy: 100 - 10, "topic": ""},
         { cx: left_padding_three + 250 + space_three, cy: 100 - 10 ,"topic": ""},
-        { cx: left_padding_three + 400 + space_three, cy: 100 - 10, "topic": "" },
-        { cx: left_padding_four + 100 - 20, cy: 250, "topic": "" },
-        { cx: left_padding_four + 250, cy: 250, "topic": "" },
-        { cx: left_padding_four + 400 + 10, cy: 250, "topic": "" },
-        { cx: left_padding_four + 550 + 20, cy: 250, "topic": "" },
-        { cx: left_padding_three + 100, cy: 400 + 10, "topic": "" },
+        { cx: left_padding_three + 400 + 60 + space_three, cy: 100 - 10, "topic": "" },
+        { cx: left_padding_four + 100 - 20 - 30, cy: 250, "topic": "" },
+        { cx: left_padding_four + 250 - 10, cy: 250, "topic": "" },
+        { cx: left_padding_four + 400 + 10 + 10, cy: 250, "topic": "" },
+        { cx: left_padding_four + 550 + 20 + 30, cy: 250, "topic": "" },
+        { cx: left_padding_three + 100 - 60, cy: 400 + 10, "topic": "" },
         { cx: left_padding_three + 250 + space_three, cy: 400 + 10, "topic": "" },
-        { cx: left_padding_three + 400 + space_three, cy: 400 + 10, "topic": "" },
+        { cx: left_padding_three + 400 + 60 + space_three, cy: 400 + 10, "topic": "" },
     ]
     for (i = 0; i < center.length; i++) {
-       center[i]['topic'] = values[i]
+       center[i]['topic'] = current_data[i]['keyword'];
     }
 
     return center
@@ -456,7 +495,7 @@ function setshadow() {
 }
 
 
-function updateSliderAxis() {
+function uupdateSliderAxis() {
     SLIDER_SCALE.domain([STARTDATE, ENDDATE])
     
     SLIDER.select(".slider-axis")
