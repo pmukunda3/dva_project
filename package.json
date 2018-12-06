@@ -14,11 +14,8 @@
   "author": "Rajdeep Singh",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.18.0",
     "hapi": "^17.7.0",
     "inert": "^5.1.2",
-    "lodash": "^4.17.11",
-    "nodemon": "^1.18.6",
     "path": "^0.12.7",
     "redis": "^2.8.0"
   },
