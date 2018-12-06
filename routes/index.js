@@ -35,10 +35,10 @@ module.exports = server => {
     }
   });
 
-  // set credentials via environment variables
-  const PORT = 8099;
-  const HOST = '136.59.239.39';
-  const PASSWORD = 'DVA_NEWS_PASSWORD@@1';
+  // set credentials for the Redis db
+  const PORT = 6379;
+  const HOST = '127.0.0.1';
+  const PASSWORD = '';
 
   server.route({
     method: 'GET',
