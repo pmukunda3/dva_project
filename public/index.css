@@ -1,100 +1,101 @@
-#canvas, .button-div {
-    width: 1000px;
-    margin: auto;
+#canvas,
+.button-div {
+  width: 1000px;
+  margin: auto;
 }
 
-    /*body {*/
-      /*font-family:"avenir next", Arial, sans-serif;*/
-      /*font-size: 12px;*/
-      /*color: #696969;*/
-    /*}*/
+/*body {*/
+/*font-family:"avenir next", Arial, sans-serif;*/
+/*font-size: 12px;*/
+/*color: #696969;*/
+/*}*/
 
-    #play-button {
-     margin-left: 35px;
-      background: #f08080;
+#play-button {
+  margin-left: 35px;
+  background: #f08080;
 
-      border-radius: 3px;
-      border: none;
-      color: white;
-        
-      padding: 0px 15px 0px 15px;
-      width: 80px;
-      cursor: pointer;
-      height: 30px;
-    }
+  border-radius: 3px;
+  border: none;
+  color: white;
 
-    #play-button:hover {
-      background-color: #696969;
-    }    
-    
-    .ticks {
-      font-size: 10px;
-    }
+  padding: 0px 15px 0px 15px;
+  width: 80px;
+  cursor: pointer;
+  height: 30px;
+}
 
-    .track,
-    .track-inset,
-    .track-overlay {
-      stroke-linecap: round;
-    }
+#play-button:hover {
+  background-color: #696969;
+}
 
-    .track {
-      stroke: #000;
-      stroke-opacity: 0.3;
-      stroke-width: 10px;
-    }
+.ticks {
+  font-size: 10px;
+}
 
-    .track-inset {
-      stroke: #dcdcdc;
-      stroke-width: 8px;
-    }
+.track,
+.track-inset,
+.track-overlay {
+  stroke-linecap: round;
+}
 
-    .track-overlay {
-      pointer-events: stroke;
-      stroke-width: 50px;
-      stroke: transparent;
-      cursor: crosshair;
-    }
+.track {
+  stroke: #000;
+  stroke-opacity: 0.3;
+  stroke-width: 10px;
+}
 
-    .handle {
-      fill: #fff;
-      stroke: #000;
-      stroke-opacity: 0.5;
-      stroke-width: 1.25px;
-    }
+.track-inset {
+  stroke: #dcdcdc;
+  stroke-width: 8px;
+}
 
-    .slider-axis path {
-        display: none
-    }
+.track-overlay {
+  pointer-events: stroke;
+  stroke-width: 50px;
+  stroke: transparent;
+  cursor: crosshair;
+}
 
-    .navbar-brand {
-        font: 400 22px/1.3 'Berkshire Swash', Helvetica, sans-serif !important;
-        text-shadow: 3px 3px 0px rgba(0,0,0,0.1), 7px 7px 0px rgba(0,0,0,0.05) !important;
-    }
+.handle {
+  fill: #fff;
+  stroke: #000;
+  stroke-opacity: 0.5;
+  stroke-width: 1.25px;
+}
 
-    .datepicker {
-        padding: 20px 25px 10px 35px;
-    }
+.slider-axis path {
+  display: none;
+}
 
-    #update-button {
-        margin-top: 8px;
-        margin-right: 8px;
-        margin-bottom: 8px;
-        margin-left: 12px;
-    }
+.navbar-brand {
+  font: 400 22px/1.3 'Berkshire Swash', Helvetica, sans-serif !important;
+  text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1), 7px 7px 0px rgba(0, 0, 0, 0.05) !important;
+}
 
-    .bubble-text {
-        text-anchor: middle;
-        alignment-baseline: middle;
-        fill: black;
-        font-weight: bold;
-    }
+.datepicker {
+  padding: 20px 25px 10px 35px;
+}
 
-    .modal-header {
-        border-bottom: 0px;
-  }
+#update-button {
+  margin-top: 8px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  margin-left: 12px;
+}
 
-  img {
-    width: 300px;
-    float: right;
-    margin-left: 20px !important;
-  }
+.bubble-text {
+  text-anchor: middle;
+  alignment-baseline: middle;
+  fill: black;
+  font-weight: bold;
+}
+
+.modal-header {
+  border-bottom: 0px;
+}
+
+img {
+  width: 300px;
+  float: right;
+  margin-left: 20px !important;
+}
