@@ -26,7 +26,7 @@ end_month = 9
 for year in range(start_year,end_year+1):
     for month in range(start_month,end_month+1):
         filename = "D:\\Gatech\\DVA\\News\\Data\\Input\\{}_{}.tsv".format(year,month)
-        url = "http://api.nytimes.com/svc/archive/v1/{}/{}.json?api-key=7ca882d86b844dfe852cb55040cbb0a7".format(year,month)
+        url = "http://api.nytimes.com/svc/archive/v1/{}/{}.json?api-key={api-key}".format(year,month)
         response = urllib.urlopen(url)
         data = json.loads(response.read().encode('utf-8'))
         print("\n")

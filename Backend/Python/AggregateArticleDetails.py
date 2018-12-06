@@ -39,9 +39,9 @@ if __name__ == "__main__":
 
     month_file_list = map(lambda x: (x[0],glob(dir_path+x[0]+"\\*.csv")),months)
 
-    redis_host = "136.59.239.39"
-    redis_port = 8099
-    redis_password = "DVA_NEWS_PASSWORD@@1"
+    redis_host = "127.0.0.1"
+    redis_port = 6379
+    redis_password = ""
     db = 2
     r = redis.StrictRedis(host=redis_host, port=redis_port, password=redis_password, decode_responses=True,db=db)
 

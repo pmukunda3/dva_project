@@ -3,9 +3,9 @@ import pprint
 import json
 
 r = redis.StrictRedis(
-    host='136.59.239.39',
-    port=8099,
-    password='DVA_NEWS_PASSWORD@@1',
+    host='127.0.0.1',
+    port=6379,
+    password='',
     db=5,
     decode_responses=True)
 
