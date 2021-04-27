@@ -17,7 +17,7 @@
     "hapi": "^17.7.0",
     "inert": "^5.1.2",
     "path": "^0.12.7",
-    "redis": "^2.8.0"
+    "redis": "^3.1.1"
   },
   "devDependencies": {}
 }
